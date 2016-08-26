@@ -47,22 +47,22 @@ def generate_board(board):
     return True
 
 
-def block(block_row, block_col, board):
+def block(x, y, board):
     b = []
     row_idx = []
     col_idx = []
-    if block_row == 1:
+    if x == 1:
         row_idx = [0, 1, 2]
-    elif block_row == 2:
+    elif x == 2:
         row_idx = [3, 4, 5]
-    elif block_row == 3:
+    elif x == 3:
         row_idx = [6, 7, 8]
 
-    if block_col == 1:
+    if y == 1:
         col_idx = [0, 1, 2]
-    elif block_col == 2:
+    elif y == 2:
         col_idx = [3, 4, 5]
-    elif block_col == 3:
+    elif y == 3:
         col_idx = [6, 7, 8]
 
     for r in row_idx:
@@ -115,6 +115,15 @@ def get_missing(board):
                 missing = [i, j]
                 positions.append(missing)
     return positions
+
+
+def get_column(position, board):
+    col = []
+    for j in range(len(board)):
+        col.append(board[j][position[1]])
+
+    return col
+
 # start = time.clock()
 # game = create_board()
 # end = time.clock()
@@ -123,4 +132,5 @@ def get_missing(board):
 # print_board(game)
 b = read_board("sudoku.txt")
 print_board(b)
-print get_missing(b)
+missing_elements = get_missing(b)
+print get_column(missing_elements[0], b)
