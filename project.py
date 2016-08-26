@@ -105,10 +105,22 @@ def read_board(file_name):
         for col in range(len(re)):
             re[col] = int(re[col])
     return completed_board
+
+
+def get_missing(board):
+    positions = []
+    for i in range(len(board)):
+        for j in range(len(board)):
+            if board[i][j] == 0:
+                missing = [i, j]
+                positions.append(missing)
+    return positions
 # start = time.clock()
 # game = create_board()
 # end = time.clock()
 # print "Time: ",
 # print end - start
 # print_board(game)
-print_board(read_board("sudoku.txt"))
+b = read_board("sudoku.txt")
+print_board(b)
+print get_missing(b)
