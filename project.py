@@ -124,6 +124,35 @@ def get_column(position, board):
 
     return col
 
+
+def get_row(position, board):
+    row = []
+    for i in range(len(board)):
+        row.append(board[position[0]][i])
+
+    return row
+
+
+def get_possible_answers(position, board):
+    row = get_row(position, board)
+    col = get_column(position, board)
+    p_block = block(position[0] / 3 + 1, position[1] / 3 + 1, board)
+    not_answer = []
+    possible_answers = []
+    for i in range(9):
+        if row[i] > 0:
+            not_answer.append(row[i])
+        if col[i] > 0:
+            not_answer.append(col[i])
+        if p_block[i] > 0:
+            not_answer.append(p_block[i])
+
+    for i in range(1, 10):
+        if i not in not_answer:
+            possible_answers.append(i)
+
+    return possible_answers
+
 # start = time.clock()
 # game = create_board()
 # end = time.clock()
@@ -133,4 +162,20 @@ def get_column(position, board):
 b = read_board("sudoku.txt")
 print_board(b)
 missing_elements = get_missing(b)
-print get_column(missing_elements[0], b)
+print missing_elements
+
+print get_row(missing_elements[0], b)
+
+while missing_elements:
+    for i in range(len(missing_elements)):
+        pos_ans = get_possible_answers(missing_elements[i], b)
+        print pos_ans
+
+        if len(pos_ans) == 1:
+            b[missing_elements[i][0]][missing_elements[i][1]] = pos_ans[0]
+        if i == len(missing_elements) - 1:
+            missing_elements = get_missing(b)
+    print missing_elements
+    print_board(b)
+
+print_board(b)
