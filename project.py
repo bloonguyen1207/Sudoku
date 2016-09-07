@@ -101,8 +101,8 @@ def print_board(board):
         print "None"
 
 
-def read_board(file_name):
-    inp = open(file_name, 'r')
+def read_board(inp):
+    # inp = open(file_name, 'r')
     data = inp.readline()
     raw_board = data.split(" ")
     completed_board = []
@@ -111,6 +111,7 @@ def read_board(file_name):
         completed_board.append(re)
         for col in range(len(re)):
             re[col] = int(re[col])
+    # inp.close()
     return completed_board
 
 
@@ -184,23 +185,18 @@ def solve(board):
             for i in range(len(missing_spots)):
                 for j in range(3):
                     lone_rangers(j, missing_spots[i], missing_spots)
-            missing_spots = get_missing(board)
-            if len(missing_spots) == old_len:
-                not_working = True
-            else:
-                old_len = len(missing_spots)
+                if i == len(missing_spots) - 1:
+                    missing_spots = get_missing(board)
+                    if len(missing_spots) == old_len:
+                        not_working = True
+                        break
+                    else:
+                        old_len = len(missing_spots)
 
             if not_working:
                 return False
 
     return True
-
-# start = time.clock()
-# game = create_board()
-# end = time.clock()
-# print "Time: ",
-# print end - start
-# print_board(game)
 
 
 def same_row(element, arr):
@@ -265,16 +261,17 @@ def lone_rangers(t, position, arr):
         if cell_info[i][2] == 1:
             b[cell_info[i][1][0]][cell_info[i][1][1]] = cell_info[i][0]
 
+inpt = open("evil-sudoku.txt", 'r')
+success = 0
+start = time.clock()
 
-b = read_board("sudoku.txt")
-print_board(b)
-print solve(b)
-#     print "It didn't work"
-# else:
-#     print "Solved"
+for i in range(1000):
+    b = read_board(inpt)
+    if solve(b):
+        success += 1
 
-print_board(b)
-
-missing = get_missing(b)
-print missing
+end = time.clock()
+print "Time: ",
+print end - start
+print "Solved " + str(success) + "/1000"
 
