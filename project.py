@@ -2,6 +2,7 @@ import random
 import time
 
 
+# ------------------Bloo generates full board (brute force) from here-----------------------
 def create_board():
     sudoku = [[0 for rows in range(9)] for cols in range(9)]
     trying = True
@@ -42,6 +43,7 @@ def generate_board(board):
 
                 for k in range(len(b)):
                     if dup or value in b[k]:
+                        dup = True
                         break
 
                 if dup:
@@ -51,6 +53,382 @@ def generate_board(board):
     return True
 
 
+# ------------------Mai generates full board (back tracking) from here-----------------------
+def create_grid():
+    grid = []
+    for row in range(9):
+        grid.append([])
+        for col in range(9):
+            grid[row].append(0)
+    return grid
+
+
+# check if there is that value in row, col, block from the beginning to that position
+def conflict(grid, row, col):
+    for i in range(0, col):
+        if grid[row][col] == grid[row][i]:
+            return True
+
+    for i in range(0, row):
+        if grid[row][col] == grid[i][col]:
+            return True
+
+    row_block = row // 3 * 3
+    col_block = col // 3 * 3
+    for i in range(row_block, row_block + 3):
+        for j in range(col_block, col_block + 3):
+            if i == row and j == col:
+                return False
+            if grid[row][col] == grid[i][j]:
+                return True
+
+    return False
+
+
+def backtracking(grid):
+    no_move = False
+    row = 0
+
+    values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    random.shuffle(values)
+    print("Seed: "),
+    print(values)
+    print("Test")
+
+    temp_grid = create_grid()
+
+    while row < 9:
+        col = 0
+        while col < 9:
+            if no_move:
+                grid[row][col] = 0
+                temp_grid[row][col] = 0
+                if col == 0 and row != 0:
+                    row -= 1
+                    col = 8
+                elif col > 0:
+                    col -= 1
+                temp_grid[row][col] += 1
+                no_move = False
+                continue
+            temp_index = temp_grid[row][col]
+            if temp_index == 9:
+                no_move = True
+                continue
+            grid[row][col] = values[temp_grid[row][col]]
+            if not conflict(grid, row, col):
+                col += 1
+            else:
+                temp_grid[row][col] += 1
+        row += 1
+
+    return grid
+
+
+# ------------------Mai first / second attemp to dig number------------------------------------
+# check neu o do chi chua duoc 1 value (8 values con` lai deu xuat hien), xoa
+def fst_easy_check(grid, row, col):
+    check = 0
+    temp_value = grid[row][col]
+    for i in range(1, 10):
+        grid[row][col] = i
+        if appearance(grid, row, col):
+            check += 1
+    # print("check " + str(check))
+    grid[row][col] = temp_value
+    if check >= 8:
+        return True
+    else:
+        return False
+
+
+# check neu cac empty cell trong row, col, block tuong ung' deu khong chua dc value, xoa
+def sec_easy_check(grid, row, col):
+    check = 0
+    count_empty = 0
+    original = grid[row][col]
+    grid[row][col] = 0
+    # check empty cells in row
+    for i in range(0, 9):
+        if i == col:
+            continue
+        if grid[row][i] == 0:
+            count_empty += 1
+            temp_value = grid[row][i]
+            grid[row][i] = original
+            if appearance(grid, row, i):
+                grid[row][i] = temp_value
+                check += 1
+            else:
+                grid[row][i] = temp_value
+                break
+    if count_empty == check:
+        grid[row][col] = original
+        return True
+    else:
+        check = 0
+        count_empty = 0
+
+    # check empty cells in col
+    for i in range(0, 9):
+        if i == row:
+            continue
+        if grid[i][col] == 0:
+            count_empty += 1
+            temp_value = grid[i][col]
+            grid[i][col] = original
+            if appearance(grid, i, col):
+                grid[i][col] = temp_value
+                check += 1
+            else:
+                grid[i][col] = temp_value
+                break
+    if count_empty == check:
+        grid[row][col] = original
+        return True
+    else:
+        check = 0
+        count_empty = 0
+
+    # check empty cells in block
+    row_block = row // 3 * 3
+    col_block = col // 3 * 3
+    for i in range(row_block, row_block + 3):
+        for j in range(col_block, col_block + 3):
+            if i == row and j == col:
+                continue
+            if grid[i][j] == 0:
+                count_empty += 1
+                temp_value = grid[i][j]
+                grid[i][j] = original
+                if appearance(grid, i, j):
+                    grid[i][j] = temp_value
+                    check += 1
+                else:
+                    grid[i][j] = temp_value
+                    break
+    grid[row][col] = original
+    if count_empty == check:
+        return True
+    else:
+        return False
+
+
+def delete_cell(grid):
+    temp_grid = []
+    erase_num = 0
+    finish = False
+    while not finish:
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] != 0:
+                    if fst_easy_check(grid, row, col):
+                        temp_grid.append([row, col])
+        if not temp_grid:
+            break
+
+        # print(temp_grid)
+        rand_index = random.randrange(0, len(temp_grid))
+        grid[temp_grid[rand_index][0]][temp_grid[rand_index][1]] = 0
+        erase_num += 1
+        temp_grid = []
+        # print("-------------------------")
+        # print_grid(grid)
+
+    print("1st Erase number: " + str(erase_num))
+
+    finish = False
+    while not finish:
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] != 0:
+                    if sec_easy_check(grid, row, col):
+                        temp_grid.append([row, col])
+        if not temp_grid:
+            break
+
+        # print(temp_grid)
+        rand_index = random.randrange(0, len(temp_grid))
+        grid[temp_grid[rand_index][0]][temp_grid[rand_index][1]] = 0
+        erase_num += 1
+        temp_grid = []
+        # print("-------------------------")
+        # print_grid(grid)
+
+    print("2st Erase number: " + str(erase_num))
+    print("Remain: " + str(81 - erase_num))
+    return grid
+
+
+# ------------------Mai final algo to dig number----------------------------------------------
+# check if there is that value in row, col, block
+def appearance(grid, row, col):
+    # print("row col: " + str(row) + " " + str(col))
+    # print("appearance " + str(grid[row][col]))
+    for i in range(0, 9):
+        if i == col:
+            continue
+        # print(i)
+        # print("row " + str(grid[row][i]))
+        # print(grid[row][col]),
+        # print(grid[row][i])
+        if grid[row][col] == grid[row][i]:
+            # print("row " + "True")
+            return True
+    for i in range(0, 9):
+        # print("col " + str(grid[i][col]))
+        if i == row:
+            continue
+        if grid[row][col] == grid[i][col]:
+            # print("col " + "True")
+            return True
+
+    row_block = row // 3 * 3
+    col_block = col // 3 * 3
+    for i in range(row_block, row_block + 3):
+        for j in range(col_block, col_block + 3):
+            if i == row and j == col:
+                continue
+            if grid[row][col] == grid[i][j]:
+                # print("block " + str(grid[i][j]))
+                return True
+    # print(False)
+    return False
+
+
+def create_guess_list(grid):
+    guess_grid = []
+    for row in range(9):
+        guess_grid.append([])
+        for col in range(9):
+            guess_grid[row].append([])
+
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if grid[i][j] == 0:
+                # print("-----" + str(i) + "----" + str(j) + "-----")
+                for k in range(1, 10):
+                    grid[i][j] = k
+                    do_append = not appearance(grid, i, j)
+                    # print(str(k) + " " + str(do_append))
+                    if do_append:
+                        # print("append")
+                        guess_grid[i][j].append(k)
+                grid[i][j] = 0
+
+    return guess_grid
+
+
+def check_guess_pos(guess_grid, row, col):
+    if len(guess_grid[row][col]) == 1:
+        return True
+    return False
+
+
+def remove_guess_num(guess_grid, row, col, value):
+    for i in range(0, 9):
+        if i == col:
+            continue
+        if value in guess_grid[row][i]:
+            # print(value in guess_grid[row][i])
+            # print value
+            # print guess_grid[row][i]
+            guess_grid[row][i].remove(value)
+
+    for i in range(0, 9):
+        # print("col " + str(grid[i][col]))
+        if i == row:
+            continue
+        if value in guess_grid[i][col]:
+            # print("col " + "True")
+            # print(value in guess_grid[i][col])
+            # print value
+            # print guess_grid[i][col]
+            guess_grid[i][col].remove(value)
+
+    row_block = row // 3 * 3
+    col_block = col // 3 * 3
+    for i in range(row_block, row_block + 3):
+        for j in range(col_block, col_block + 3):
+            if i == row and j == col:
+                continue
+            if value in guess_grid[i][j]:
+                # print("block " + str(grid[i][j]))
+                guess_grid[i][j].remove(value)
+
+    return guess_grid
+
+
+def update_guess_list(guess_grid):
+    check = 0
+    while True:
+        no_move = check
+        check = 0
+        for i in range(0, 9):
+            for j in range(0, 9):
+                if check_guess_pos(guess_grid, i, j):
+                    temp_value = guess_grid[i][j][0]
+                    remove_guess_num(guess_grid, i, j, temp_value)
+                    check += 1
+        if no_move == check:
+            break
+    return guess_grid
+
+
+def dig_hole(grid, remain_num):
+    temp_grid = []
+    erase_num = 0
+    finish = False
+
+    # randomly delete 20 num
+    while erase_num < 20:
+        row = random.randrange(0, 9)
+        col = random.randrange(0, 9)
+        if grid[row][col] != 0:
+            erase_num += 1
+            grid[row][col] = 0
+
+    # continue deleting but at each iteration, check if the cell is possible to delete
+    while not finish and erase_num < 81 - remain_num:
+        for row in range(len(grid)):
+            for col in range(len(grid[0])):
+                if grid[row][col] != 0:
+                    temp_value = grid[row][col]
+                    grid[row][col] = 0
+                    guess_grid = create_guess_list(grid)
+                    guess_grid = update_guess_list(guess_grid)
+                    if check_guess_pos(guess_grid, row, col):
+                        temp_grid.append([row, col])
+                    grid[row][col] = temp_value
+        if not temp_grid:
+            break
+
+        # print(temp_grid)
+        rand_index = random.randrange(0, len(temp_grid))
+        grid[temp_grid[rand_index][0]][temp_grid[rand_index][1]] = 0
+        erase_num += 1
+        temp_grid = []
+        # print("-------------------------")
+        # print_grid(grid)
+
+    print("Erase number: " + str(erase_num))
+    print("Remain: " + str(81 - erase_num))
+    return grid
+
+
+# ------------------Mai store grid into file--------------------------------------------------
+def store_grid(grid, file_name):
+    # output_file = open("unsolved_sudoku.txt", 'w')
+    output_file = open(file_name, 'w')
+    for row_num in range(len(grid)):
+        for num in grid[row_num]:
+            output_file.write(str(num))
+        if row_num != len(grid) - 1:
+            output_file.write(" ")
+    output_file.close()
+
+
+# ------------------Bloo solve sudoku---------------------------------------------------------
 def block(x, y, board):
     b = []
     br = []
@@ -194,8 +572,10 @@ def solve(board):
                         old_len = len(missing_spots)
 
             if not_working:
+                print_board(board)
                 return False
 
+    print_board(board)
     return True
 
 
@@ -261,11 +641,33 @@ def lone_rangers(t, position, arr):
         if cell_info[i][2] == 1:
             b[cell_info[i][1][0]][cell_info[i][1][1]] = cell_info[i][0]
 
-inpt = open("evil-sudoku.txt", 'r')
+
+# -------------------Main---------------------------------------------------
+num_remain = 26
+num_grid = 1
+inp_file = "unsolved_sudoku.txt"
+
+
+# ---Bloo generates full board---
+s_grid = create_board()
+
+# ---Mai generates full board---
+# s_grid = create_grid()
+# s_grid = backtracking(s_grid)
+
+
+print_board(s_grid)
+
+s_grid = dig_hole(s_grid, num_remain)
+print_board(s_grid)
+store_grid(s_grid, "unsolved_sudoku.txt")
+
+
+inpt = open(inp_file, 'r')
 success = 0
 start = time.clock()
 
-for i in range(1000):
+for i in range(num_grid):
     b = read_board(inpt)
     if solve(b):
         success += 1
@@ -273,5 +675,5 @@ for i in range(1000):
 end = time.clock()
 print "Time: ",
 print end - start
-print "Solved " + str(success) + "/1000"
+print "Solved " + str(success) + "/" + str(num_grid)
 
