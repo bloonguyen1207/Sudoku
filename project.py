@@ -626,7 +626,7 @@ def lone_rangers(t, position, arr):
     possible_answers = []
     test = []
     if t is 0:
-        test = get_block(position, arr)
+        test = same_block(position, arr)
     elif t is 1:
         test = same_row(position, arr)
     elif t is 2:
