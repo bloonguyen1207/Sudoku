@@ -86,40 +86,38 @@ def conflict(grid, row, col):
 
 
 def backtracking(grid):
+    temp_grid = []
+    for row in range(9):
+        temp_grid.append([])
+        for col in range(9):
+            temp_grid[row].append([])
+
     no_move = False
     row = 0
-
-    values = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    random.shuffle(values)
-    print("Seed: "),
-    print(values)
-    print("Test")
-
-    temp_grid = create_grid()
 
     while row < 9:
         col = 0
         while col < 9:
             if no_move:
                 grid[row][col] = 0
-                temp_grid[row][col] = 0
+                temp_grid[row][col] = []
                 if col == 0 and row != 0:
                     row -= 1
                     col = 8
                 elif col > 0:
                     col -= 1
-                temp_grid[row][col] += 1
                 no_move = False
                 continue
-            temp_index = temp_grid[row][col]
-            if temp_index == 9:
+            temp_value = random.randrange(1, 10)
+            while temp_value in temp_grid[row][col] and len(temp_grid[row][col]) < 9:
+                temp_value = random.randrange(1, 10)
+            if len(temp_grid[row][col]) == 9:
                 no_move = True
                 continue
-            grid[row][col] = values[temp_grid[row][col]]
+            temp_grid[row][col].append(temp_value)
+            grid[row][col] = temp_value
             if not conflict(grid, row, col):
                 col += 1
-            else:
-                temp_grid[row][col] += 1
         row += 1
 
     return grid
@@ -375,7 +373,7 @@ def update_guess_list(guess_grid):
     return guess_grid
 
 
-def dig_hole(grid, remain_num):
+def erase_number(grid, remain_num):
     temp_grid = []
     erase_num = 0
     finish = False
@@ -670,10 +668,9 @@ inp_file = "unsolved_sudoku.txt"
 
 # print_board(s_grid)
 #
-# s_grid = dig_hole(s_grid, num_remain)
+# s_grid = erase_number(s_grid, num_remain)
 # print_board(s_grid)
 # store_grid(s_grid, "unsolved_sudoku.txt")
-
 
 inpt = open("easy-sudoku.txt", 'r')
 success = 0
