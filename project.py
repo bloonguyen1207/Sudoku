@@ -508,7 +508,7 @@ def get_missing(board):
     return positions
 
 
-# Function to get all elements in the same column of a specific position
+# Function to get all elements in the same column of a specific position in the sudoku board
 def get_column(position, board):
     col = []
     for j in range(len(board)):
@@ -517,25 +517,13 @@ def get_column(position, board):
     return col
 
 
-# Function to get all elements in the same row of a specific position
+# Function to get all elements in the same row of a specific position in the sudoku board
 def get_row(position, board):
     row = []
     for i in range(len(board)):
         row.append(board[position[0]][i])
 
     return row
-
-
-# Function to get all elements in the same block of a specific position
-def get_block(element, arr):
-    sb = []
-    br = element[0] / 3
-    bc = element[1] / 3
-    for i in range(len(arr)):
-        if arr[i][0] / 3 == br and arr[i][1] / 3 == bc:
-            sb.append(arr[i])
-
-    return sb
 
 
 # Function to get possible answer by checking row, block, column of a specific position
@@ -594,32 +582,43 @@ def solve(board):
                         old_len = len(missing_spots)
 
             if not_working:
-                print_board(board)
                 return False
 
-    print_board(board)
     return True
 
-# Same as get_row and get_column
 
-# def same_row(element, arr):
-#     sr = []
-#     row = element[0]
-#     for i in range(len(arr)):
-#         if arr[i][0] == row:
-#             sr.append(arr[i])
-#
-#     return sr
-#
-#
-# def same_col(element, arr):
-#     sc = []
-#     col = element[1]
-#     for i in range(len(arr)):
-#         if arr[i][1] == col:
-#             sc.append(arr[i])
-#
-#     return sc
+# Function to get all elements in the same row of a specific position in a list
+def same_row(element, arr):
+    sr = []
+    row = element[0]
+    for i in range(len(arr)):
+        if arr[i][0] == row:
+            sr.append(arr[i])
+
+    return sr
+
+
+# Function to get all elements in the same column of a specific position in a list
+def same_col(element, arr):
+    sc = []
+    col = element[1]
+    for i in range(len(arr)):
+        if arr[i][1] == col:
+            sc.append(arr[i])
+
+    return sc
+
+
+# Function to get all elements in the same block of a specific position in a list
+def same_block(element, arr):
+    sb = []
+    br = element[0] / 3
+    bc = element[1] / 3
+    for i in range(len(arr)):
+        if arr[i][0] / 3 == br and arr[i][1] / 3 == bc:
+            sb.append(arr[i])
+
+    return sb
 
 
 # Check the number of occurrence of an answer in either a block, row or column, if it only appear once, it's the answer
@@ -631,9 +630,9 @@ def lone_rangers(t, position, arr):
     if t is 0:
         test = get_block(position, arr)
     elif t is 1:
-        test = get_row(position, arr)
+        test = same_row(position, arr)
     elif t is 2:
-        test = get_column(position, arr)
+        test = same_col(position, arr)
     for i in range(len(test)):
         possible_answer = get_possible_answers(test[i], b)
         possible_answers.append(possible_answer)
@@ -662,25 +661,24 @@ inp_file = "unsolved_sudoku.txt"
 
 
 # ---Bloo generates full board---
-s_grid = create_board()
+# s_grid = create_board()
 
 # ---Mai generates full board---
 # s_grid = create_grid()
 # s_grid = backtracking(s_grid)
 
 
-print_board(s_grid)
+# print_board(s_grid)
+#
+# s_grid = dig_hole(s_grid, num_remain)
+# print_board(s_grid)
+# store_grid(s_grid, "unsolved_sudoku.txt")
 
-s_grid = dig_hole(s_grid, num_remain)
-print_board(s_grid)
-store_grid(s_grid, "unsolved_sudoku.txt")
 
-
-inpt = open(inp_file, 'r')
+inpt = open("easy-sudoku.txt", 'r')
 success = 0
 start = time.clock()
-
-for i in range(num_grid):
+for i in range(1000):
     b = read_board(inpt)
     if solve(b):
         success += 1
@@ -688,5 +686,5 @@ for i in range(num_grid):
 end = time.clock()
 print "Time: ",
 print end - start
-print "Solved " + str(success) + "/" + str(num_grid)
+print "Solved " + str(success) + "/" + str(1000)
 
