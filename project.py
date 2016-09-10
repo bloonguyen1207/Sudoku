@@ -429,6 +429,7 @@ def store_grid(grid, file_name):
 
 
 # ------------------Bloo solve sudoku---------------------------------------------------------
+# Function to return elements in a specific block, first block x, y is 1, 1
 def block(x, y, board):
     b = []
     br = []
@@ -456,6 +457,7 @@ def block(x, y, board):
     return b
 
 
+# Function to print sudoku board in a nice format
 def print_board(board):
 
     if board is not None:
@@ -479,6 +481,8 @@ def print_board(board):
         print "None"
 
 
+# Function to read a sudoku board from a txt file
+# Sample: 302609005 500730000 000000900 000940000 000000109 000057060 008500006 000000003 019082040
 def read_board(inp):
     # inp = open(file_name, 'r')
     data = inp.readline()
@@ -493,6 +497,7 @@ def read_board(inp):
     return completed_board
 
 
+# Function that return the positions of the missing spots in the board
 def get_missing(board):
     positions = []
     for i in range(len(board)):
@@ -503,6 +508,7 @@ def get_missing(board):
     return positions
 
 
+# Function to get all elements in the same column of a specific position
 def get_column(position, board):
     col = []
     for j in range(len(board)):
@@ -511,6 +517,7 @@ def get_column(position, board):
     return col
 
 
+# Function to get all elements in the same row of a specific position
 def get_row(position, board):
     row = []
     for i in range(len(board)):
@@ -519,6 +526,19 @@ def get_row(position, board):
     return row
 
 
+# Function to get all elements in the same block of a specific position
+def get_block(element, arr):
+    sb = []
+    br = element[0] / 3
+    bc = element[1] / 3
+    for i in range(len(arr)):
+        if arr[i][0] / 3 == br and arr[i][1] / 3 == bc:
+            sb.append(arr[i])
+
+    return sb
+
+
+# Function to get possible answer by checking row, block, column of a specific position
 def get_possible_answers(position, board):
     row = get_row(position, board)
     col = get_column(position, board)
@@ -541,6 +561,8 @@ def get_possible_answers(position, board):
     return possible_answers
 
 
+# Check the length of the possible answer array, if there's only 1 element in the array, it's the answer
+# If the 1st solution doesn't work, try apply lone ranger technique
 def solve(board):
     missing_spots = get_missing(board)
     old_len = len(missing_spots)
@@ -578,49 +600,40 @@ def solve(board):
     print_board(board)
     return True
 
+# Same as get_row and get_column
 
-def same_row(element, arr):
-    sr = []
-    row = element[0]
-    for i in range(len(arr)):
-        if arr[i][0] == row:
-            sr.append(arr[i])
-
-    return sr
-
-
-def same_col(element, arr):
-    sc = []
-    col = element[1]
-    for i in range(len(arr)):
-        if arr[i][1] == col:
-            sc.append(arr[i])
-
-    return sc
-
-
-def same_block(element, arr):
-    sb = []
-    br = element[0] / 3
-    bc = element[1] / 3
-    for i in range(len(arr)):
-        if arr[i][0] / 3 == br and arr[i][1] / 3 == bc:
-            sb.append(arr[i])
-
-    return sb
+# def same_row(element, arr):
+#     sr = []
+#     row = element[0]
+#     for i in range(len(arr)):
+#         if arr[i][0] == row:
+#             sr.append(arr[i])
+#
+#     return sr
+#
+#
+# def same_col(element, arr):
+#     sc = []
+#     col = element[1]
+#     for i in range(len(arr)):
+#         if arr[i][1] == col:
+#             sc.append(arr[i])
+#
+#     return sc
 
 
+# Check the number of occurrence of an answer in either a block, row or column, if it only appear once, it's the answer
 def lone_rangers(t, position, arr):
     cell_info = []
     missing_elements = []
     possible_answers = []
     test = []
     if t is 0:
-        test = same_block(position, arr)
+        test = get_block(position, arr)
     elif t is 1:
-        test = same_row(position, arr)
+        test = get_row(position, arr)
     elif t is 2:
-        test = same_col(position, arr)
+        test = get_column(position, arr)
     for i in range(len(test)):
         possible_answer = get_possible_answers(test[i], b)
         possible_answers.append(possible_answer)
