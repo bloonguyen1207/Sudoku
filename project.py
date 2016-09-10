@@ -124,7 +124,7 @@ def backtracking(grid):
 
 
 # ------------------Mai first / second attemp to dig number------------------------------------
-# check neu o do chi chua duoc 1 value (8 values con` lai deu xuat hien), xoa
+# check if there is only one possible value (if all 8 other numbers appear)
 def fst_easy_check(grid, row, col):
     check = 0
     temp_value = grid[row][col]
@@ -140,7 +140,7 @@ def fst_easy_check(grid, row, col):
         return False
 
 
-# check neu cac empty cell trong row, col, block tuong ung' deu khong chua dc value, xoa
+# check if other empty cell in the same row, col, block can hold the value of the current cell
 def sec_easy_check(grid, row, col):
     check = 0
     count_empty = 0
