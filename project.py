@@ -655,7 +655,8 @@ def lone_rangers(t, position, arr, b):
 
 # -------------------Main---------------------------------------------------
 menu = ["Generate easy sudoku board", "Generate hard sudoku board", "Solve board from easy sudoku file",
-        "Solve board from hard sudoku file", "Solve board from evil sudoku file", "Solve current generated sudoku board", "Exit"]
+        "Solve board from medium sudoku file", "Solve board from hard sudoku file",
+        "Solve board from evil sudoku file", "Solve current generated sudoku board", "Exit"]
 choice = 0
 while choice == 0:
     print("\n-----Main Menu-----")
@@ -674,13 +675,15 @@ while choice == 0:
         store_grid(sudoku_board, "unsolved_sudoku.txt")
         print_board(sudoku_board)
         choice = 0
-    elif choice >= 3 and choice <= 5:
+    elif choice >= 3 and choice <= 6:
         input_name = ""
         if choice == 3:
             input_name = "easy-sudoku.txt"
         elif choice == 4:
-            input_name = "hard-sudoku.txt"
+            input_name = "medium-sudoku.txt"
         elif choice == 5:
+            input_name = "hard-sudoku.txt"
+        elif choice == 6:
             input_name = "evil-sudoku.txt"
         input_file = open(input_name, 'r')
         num_board = int(raw_input("Enter the number of sudoku boards you want to solve (max: 1000): "))
@@ -701,7 +704,7 @@ while choice == 0:
         input_file.close()
         output_file.close()
         choice = 0
-    elif choice == 6:
+    elif choice == 7:
         if not os.path.isfile("unsolved_sudoku.txt"):
             print("There is no current generated sudoku")
             choice = 0
@@ -714,7 +717,9 @@ while choice == 0:
             print("This board can not be solved by this program")
         choice = 0
 
-    elif choice == 7:
+    elif choice == 8:
+        print "Exiting..."
+        print "Programmed by s3515305 & s3558475"
         break
     else:
         choice = 0
