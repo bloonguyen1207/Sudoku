@@ -214,7 +214,7 @@ def sec_easy_check(grid, row, col):
 
 
 def delete_cell(grid):
-    temp_grid = []
+    temp_list = []
     erase_num = 0
     finish = False
     while not finish:
@@ -222,15 +222,15 @@ def delete_cell(grid):
             for col in range(len(grid[0])):
                 if grid[row][col] != 0:
                     if fst_easy_check(grid, row, col):
-                        temp_grid.append([row, col])
-        if not temp_grid:
+                        temp_list.append([row, col])
+        if not temp_list:
             break
 
-        # print(temp_grid)
-        rand_index = random.randrange(0, len(temp_grid))
-        grid[temp_grid[rand_index][0]][temp_grid[rand_index][1]] = 0
+        # print(temp_list)
+        rand_index = random.randrange(0, len(temp_list))
+        grid[temp_list[rand_index][0]][temp_list[rand_index][1]] = 0
         erase_num += 1
-        temp_grid = []
+        temp_list = []
         # print("-------------------------")
         # print_grid(grid)
 
@@ -242,15 +242,15 @@ def delete_cell(grid):
             for col in range(len(grid[0])):
                 if grid[row][col] != 0:
                     if sec_easy_check(grid, row, col):
-                        temp_grid.append([row, col])
-        if not temp_grid:
+                        temp_list.append([row, col])
+        if not temp_list:
             break
 
-        # print(temp_grid)
-        rand_index = random.randrange(0, len(temp_grid))
-        grid[temp_grid[rand_index][0]][temp_grid[rand_index][1]] = 0
+        # print(temp_list)
+        rand_index = random.randrange(0, len(temp_list))
+        grid[temp_list[rand_index][0]][temp_list[rand_index][1]] = 0
         erase_num += 1
-        temp_grid = []
+        temp_list = []
         # print("-------------------------")
         # print_grid(grid)
 
@@ -737,9 +737,17 @@ while choice == 0:
 
 # print_board(s_grid)
 
-# num_remain = 26
-# s_grid = erase_number(s_grid, num_remain)
-#
+# erase_num = 35
+# num_remain = 81 - erase_num
+# total_time = 0
+# for i in range(10):
+#     s_grid = create_board()
+#     start = time.clock()
+#     s_grid = erase_number(s_grid, num_remain)
+#     end = time.clock()
+#     total_time += end - start
+# print("Time: " + str(total_time) + " seconds")
+
 # print_board(s_grid)
 # store_grid(s_grid, "unsolved_sudoku.txt")
 #
