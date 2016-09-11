@@ -1,5 +1,6 @@
 import random
 import time
+import os.path
 
 
 # ------------------Bloo generates full board (brute force) from here-----------------------
@@ -653,16 +654,81 @@ def lone_rangers(t, position, arr, b):
 
 
 # -------------------Main---------------------------------------------------
+menu = ["Generate easy sudoku board", "Generate hard sudoku board", "Solve board from easy sudoku file",
+        "Solve board from hard sudoku file", "Solve board from evil sudoku file", "Solve current generated sudoku board", "Exit"]
+choice = 0
+while choice == 0:
+    print("\n-----Main Menu-----")
+    for i in range(len(menu)):
+        print(str(i + 1) + ". " + menu[i])
+    choice = int(raw_input("Enter your choice: "))
+    print("\n")
+    if choice == 1 or choice == 2:
+        sudoku_board = create_board()
+        remain_cell = 81
+        if choice == 1:
+            remain_cell = random.randrange(36, 50)
+        elif choice == 2:
+            remain_cell = random.randrange(28, 32)
+        sudoku_board = erase_number(sudoku_board, remain_cell)
+        store_grid(sudoku_board, "unsolved_sudoku.txt")
+        print_board(sudoku_board)
+        choice = 0
+    elif choice >= 3 and choice <= 5:
+        input_name = ""
+        if choice == 3:
+            input_name = "easy-sudoku.txt"
+        elif choice == 4:
+            input_name = "hard-sudoku.txt"
+        elif choice == 5:
+            input_name = "evil-sudoku.txt"
+        input_file = open(input_name, 'r')
+        num_board = int(raw_input("Enter the number of sudoku boards you want to solve (max: 1000): "))
+        output_file = open("solved_sudoku.txt", 'w+')
+        success = 0
+        for i in range(num_board):
+            sudoku_board = read_board(input_file)
+            if solve(sudoku_board):
+                success += 1
+                for row_num in range(len(sudoku_board)):
+                    for num in sudoku_board[row_num]:
+                        output_file.write(str(num))
+                    if row_num != len(sudoku_board) - 1:
+                        output_file.write(" ")
+                output_file.write("\n")
+        print "Solved " + str(success) + "/" + str(num_board)
+        print('''Please refer to "solved_sudoku.txt" to see all the anwsers''')
+        input_file.close()
+        output_file.close()
+        choice = 0
+    elif choice == 6:
+        if not os.path.isfile("unsolved_sudoku.txt"):
+            print("There is no current generated sudoku")
+            choice = 0
+            continue
+        input_file = open("unsolved_sudoku.txt", 'r')
+        sudoku_board = read_board(input_file)
+        if solve(sudoku_board):
+            print_board(sudoku_board)
+        else:
+            print("This board can not be solved by this program")
+        choice = 0
+
+    elif choice == 7:
+        break
+    else:
+        choice = 0
+
 # ---Bloo generates full board---
 # s_grid = create_board()
 
 # ---Mai generates full board---
-start = time.clock()
-for i in range(1000):
-    s_grid = create_grid()
-    s_grid = backtracking(s_grid)
-end = time.clock()
-print("Time: " + str(end - start) + " seconds")
+# start = time.clock()
+# for i in range(1000):
+#     s_grid = create_grid()
+#     s_grid = backtracking(s_grid)
+# end = time.clock()
+# print("Time: " + str(end - start) + " seconds")
 
 # print_board(s_grid)
 
@@ -684,4 +750,3 @@ print("Time: " + str(end - start) + " seconds")
 # print "Time: ",
 # print end - start
 # print "Solved " + str(success) + "/" + str(1000)
-
