@@ -738,10 +738,10 @@ while choice == 0:
 # print_board(s_grid)
 # store_grid(s_grid, "unsolved_sudoku.txt")
 #
-# inpt = open("easy-sudoku.txt", 'r')
+# inpt = open("evil-sudoku.txt", 'r')
 # success = 0
 # start = time.clock()
-# for i in range(1000):
+# for i in range(100):
 #     b = read_board(inpt)
 #     if solve(b):
 #         success += 1
@@ -749,4 +749,4 @@ while choice == 0:
 # end = time.clock()
 # print "Time: ",
 # print end - start
-# print "Solved " + str(success) + "/" + str(1000)
+# print "Solved " + str(success) + "/" + str(100)
