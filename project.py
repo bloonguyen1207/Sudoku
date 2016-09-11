@@ -586,7 +586,7 @@ def solve(board):
     return True
 
 
-# Function to get all elements in the same row of a specific position in a list
+# Function to get all positions in the same row of a specific position in a list
 def same_row(element, arr):
     sr = []
     row = element[0]
@@ -597,7 +597,7 @@ def same_row(element, arr):
     return sr
 
 
-# Function to get all elements in the same column of a specific position in a list
+# Function to get all positions in the same column of a specific position in a list
 def same_col(element, arr):
     sc = []
     col = element[1]
@@ -608,7 +608,7 @@ def same_col(element, arr):
     return sc
 
 
-# Function to get all elements in the same block of a specific position in a list
+# Function to get all positions in the same block of a specific position in a list
 def same_block(element, arr):
     sb = []
     br = element[0] / 3
@@ -746,10 +746,10 @@ while choice == 0:
 # print_board(s_grid)
 # store_grid(s_grid, "unsolved_sudoku.txt")
 #
-# inpt = open("easy-sudoku.txt", 'r')
+# inpt = open("evil-sudoku.txt", 'r')
 # success = 0
 # start = time.clock()
-# for i in range(1000):
+# for i in range(100):
 #     b = read_board(inpt)
 #     if solve(b):
 #         success += 1
@@ -757,4 +757,4 @@ while choice == 0:
 # end = time.clock()
 # print "Time: ",
 # print end - start
-# print "Solved " + str(success) + "/" + str(1000)
+# print "Solved " + str(success) + "/" + str(100)
