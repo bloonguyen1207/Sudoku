@@ -570,7 +570,7 @@ def solve(board):
         if rcb_not_working:
             for i in range(len(missing_spots)):
                 for j in range(3):
-                    lone_rangers(j, missing_spots[i], missing_spots)
+                    lone_rangers(j, missing_spots[i], missing_spots, board)
                 if i == len(missing_spots) - 1:
                     missing_spots = get_missing(board)
                     if len(missing_spots) == old_len:
@@ -620,7 +620,7 @@ def same_block(element, arr):
 
 
 # Check the number of occurrence of an answer in either a block, row or column, if it only appear once, it's the answer
-def lone_rangers(t, position, arr):
+def lone_rangers(t, position, arr, b):
     cell_info = []
     missing_elements = []
     possible_answers = []
@@ -653,35 +653,35 @@ def lone_rangers(t, position, arr):
 
 
 # -------------------Main---------------------------------------------------
-num_remain = 26
-num_grid = 1
-inp_file = "unsolved_sudoku.txt"
-
-
 # ---Bloo generates full board---
 # s_grid = create_board()
 
 # ---Mai generates full board---
-# s_grid = create_grid()
-# s_grid = backtracking(s_grid)
-
-
-# print_board(s_grid)
-#
-# s_grid = erase_number(s_grid, num_remain)
-# print_board(s_grid)
-# store_grid(s_grid, "unsolved_sudoku.txt")
-
-inpt = open("easy-sudoku.txt", 'r')
-success = 0
 start = time.clock()
 for i in range(1000):
-    b = read_board(inpt)
-    if solve(b):
-        success += 1
-
+    s_grid = create_grid()
+    s_grid = backtracking(s_grid)
 end = time.clock()
-print "Time: ",
-print end - start
-print "Solved " + str(success) + "/" + str(1000)
+print("Time: " + str(end - start) + " seconds")
+
+# print_board(s_grid)
+
+# num_remain = 26
+# s_grid = erase_number(s_grid, num_remain)
+#
+# print_board(s_grid)
+# store_grid(s_grid, "unsolved_sudoku.txt")
+#
+# inpt = open("easy-sudoku.txt", 'r')
+# success = 0
+# start = time.clock()
+# for i in range(1000):
+#     b = read_board(inpt)
+#     if solve(b):
+#         success += 1
+#
+# end = time.clock()
+# print "Time: ",
+# print end - start
+# print "Solved " + str(success) + "/" + str(1000)
 
