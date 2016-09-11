@@ -3,7 +3,7 @@ import time
 import os.path
 
 
-# ------------------Bloo generates full board (brute force) from here-----------------------
+# ------------------Generates full board (brute force)-----------------------
 def create_board():
     sudoku = [[0 for rows in range(9)] for cols in range(9)]
     trying = True
@@ -54,7 +54,7 @@ def generate_board(board):
     return True
 
 
-# ------------------Mai generates full board (back tracking) from here-----------------------
+# ------------------Generates full board (back tracking)-----------------------
 def create_grid():
     grid = []
     for row in range(9):
@@ -124,7 +124,7 @@ def backtracking(grid):
     return grid
 
 
-# ------------------Mai first / second attemp to dig number------------------------------------
+# ------------------First / Second attemp to erase number------------------------------------
 # check if there is only one possible value (if all 8 other numbers appear)
 def fst_easy_check(grid, row, col):
     check = 0
@@ -259,7 +259,7 @@ def delete_cell(grid):
     return grid
 
 
-# ------------------Mai final algo to dig number----------------------------------------------
+# ------------------Final algorithm to erase number----------------------------------------------
 # check if there is that value in row, col, block
 def appearance(grid, row, col):
     # print("row col: " + str(row) + " " + str(col))
@@ -415,7 +415,7 @@ def erase_number(grid, remain_num):
     return grid
 
 
-# ------------------Mai store grid into file--------------------------------------------------
+# ------------------Store grid into file--------------------------------------------------
 def store_grid(grid, file_name):
     # output_file = open("unsolved_sudoku.txt", 'w')
     output_file = open(file_name, 'w')
@@ -427,7 +427,7 @@ def store_grid(grid, file_name):
     output_file.close()
 
 
-# ------------------Bloo solve sudoku---------------------------------------------------------
+# ------------------Solve sudoku---------------------------------------------------------
 # Function to return elements in a specific block, first block x, y is 1, 1
 def block(x, y, board):
     b = []
